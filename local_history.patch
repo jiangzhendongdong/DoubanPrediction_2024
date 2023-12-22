@@ -1,0 +1,306 @@
+Index: crawler/sendEmail.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/crawler/sendEmail.py b/crawler/sendEmail.py
+new file mode 100644
+--- /dev/null	(date 1703208928496)
++++ b/crawler/sendEmail.py	(date 1703208928496)
+@@ -0,0 +1,58 @@
++import smtplib
++from email.header import Header
++from email.mime.text import MIMEText
++from email.mime.multipart import MIMEMultipart
++import io
++import os
++import sys
++
++sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
++class sendEmail(object):
++    def __init__(self, sender, receiver, password, smtpServer='smtp.qq.com', title=None, content=None, *annex):
++        self._sender = sender
++        self._receiver = receiver
++        self._smtpServer = smtpServer
++        self._password = password
++        self._title = title
++        self._content = content
++        self._annex = annex
++
++    def sendMail(self):
++        # 创建一个带附件的实例 
++        message = MIMEMultipart()
++        message['From'] = self._sender
++        message['To'] = self._receiver
++        message['Subject'] = Header(self._title, 'utf-8')
++
++        # 邮件正文内容 
++        message.attach(MIMEText(self._content, 'plain', 'utf-8'))
++        # 构造附件（附件为TXT格式的文本）
++        for i in range(len(self._annex)):
++            if os.path.isfile(self._annex[i]):
++                att = MIMEText(open(self._annex[i], 'rb').read(), 'base64', 'utf-8')
++                att["Content-Type"] = 'application/octet-stream'
++                print(self._annex[i].encode())
++                att.add_header('Content-Disposition', 'attachment', filename=('utf-8', '', self._annex[i]))
++                message.attach(att)
++            else:
++                print("%s does not exist!" % self._annex[i])
++                sys.exit(1)
++
++        server = smtplib.SMTP(self._smtpServer, 587)  # SMTP协议默认端口是25
++        server.starttls()
++        # server.set_debuglevel(1)
++        server.login(self._sender, self._password)
++        server.sendmail(self._sender, self._receiver, message.as_string())
++        print("Mail sent successfully!")
++        server.quit()
++
++
++def main():
++    Mail = sendEmail('418132390@qq.com', '418132390@qq.com', 'oiejpyknzivubhhb', 'smtp.qq.com',
++                     '每日豆瓣电影预测数据更新', '每日豆瓣电影预测数据更新',
++                     str('D:\\Downloads\\crawlers-for-entertainment-master\\douban_Fri Dec 15 15-20-05 2023.csv'))
++    Mail.sendMail()
++
++
++if __name__ == '__main__':
++    main()
+Index: crawler/douban_hot_spider.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/crawler/douban_hot_spider.py b/crawler/douban_hot_spider.py
+new file mode 100644
+--- /dev/null	(date 1703208928492)
++++ b/crawler/douban_hot_spider.py	(date 1703208928492)
+@@ -0,0 +1,115 @@
++import requests
++import json
++import time
++import pandas as pd
++import numpy as np
++
++
++class douban(object):
++    def __init__(self, url_root):
++        self.page = 0
++        self.url_root = url_root
++        self.url = []
++        self.movie_title = []
++        self.movie_rate = []
++        self.headers = [
++            {
++                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'},
++            {
++                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'},
++            {'User-Agent': 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/535.11 (KHTML, like Gecko) '
++                           'Chrome/17.0.963.12 Safari/535.11'},
++            {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)'}
++        ]
++
++        # 定义一个函数catch_data，用于获取数据
++    def catch_data(self):
++        # 使用while循环，当条件为真时，执行循环体
++        while True:
++            # 设置requests模块的默认重试次数为5
++            # requests.adapters.DEFAULT_RETRIES = 5
++            # 创建一个session对象
++            s = requests.session()
++            # 关闭session对象保持连接
++            s.keep_alive = False
++
++            # 拼接url
++            url_visit = self.url_root + '{}'.format(self.page * 20)
++            # 随机等待5秒
++            time.sleep(np.random.rand() * 5)
++            # 发送get请求，获取json数据
++            file = s.get(url_visit, headers=self.headers[self.page % len(self.headers)]).json()
++            # 打印headers
++            print(self.headers[self.page % len(self.headers)])
++            # 页数加1
++            self.page += 1
++            # 获取item数量
++            item_num = len(file['subjects'])
++            # 如果item数量小于20，则跳出循环
++            if item_num < 20:
++                break
++            # 遍历item
++            for i in range(item_num):
++                # 获取item的属性
++                dict = file['subjects'][i]
++
++                # 获取item的url
++                urlname = dict['url']
++                # 将url添加到url列表中
++                self.url.append(urlname)
++
++                # 获取item的标题
++                title = dict['title']
++                # 将标题添加到标题列表中
++                self.movie_title.append(title)
++                
++                # 获取item的评分
++                rate = dict['rate']
++                # 将评分添加到评分列表中
++                self.movie_rate.append(rate)
++
++    # 定义extract函数，用于提取数据
++    def extract(self):
++        # 调用catch_data函数，获取数据
++        self.catch_data()
++        # 创建一个列表ticks，将当前时间添加到列表中
++        ticks = [time.ctime()]
++        # 将列表ticks转换为列表
++        ticks = list(ticks)
++        # 将列表ticks中的元素添加空字符串，直到列表长度等于url列表的长度
++        ticks.extend([""] * (len(self.url) - len(ticks)))
++
++        # 创建一个DataFrame，将列表ticks、self.movie_title、self.movie_rate、self.url中的元素添加到DataFrame中
++        test = pd.DataFrame({'time': ticks, 'title': self.movie_title, 'rate': self.movie_rate, 'url': self.url})
++        # 打印DataFrame
++        print(test)
++        # 创建一个字符串，将当前时间添加到字符串中，并使用正则表达式替换时间中的冒号，最后添加.csv后缀
++        path = './douban_' + str(ticks[0]).replace(':', '-') + '.csv'
++        # 将DataFrame保存为csv文件
++        test.to_csv(path, encoding='utf-8-sig', index=False)
++        # 返回保存文件的路径
++        return path
++
++def main():
++    data = douban("https://movie.douban.com/j/search_subjects?type=movie&tag=热门&sort=recommend&page_limit=500"
++                  "&page_start=")
++    data.extract()
++
++if __name__ == '__main__':
++    main()
++
++
++ # 这是一个关于电影信息的 JSON 对象，其中包含以下字段：
++
++# 1. `episodes_info`：本电影的所有章节信息，目前为空字符串。
++# 2. `rate`：本电影的评分，值为 "7.3"。
++# 3. `cover_x`：本电影封面图片的水平尺寸，值为 2000。
++# 4. `title`：本电影的标题，值为 "花月杀手"。
++# 5. `url`：本电影的豆瓣页面链接，值为 "https://movie.douban.com/subject/26745332/"。
++# 6. `playable`：本电影是否可播放，值为 False。
++# 7. `cover`：本电影的封面图片链接，值为 "https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2897460998.webp"。
++# 8. `id`：本电影的 ID，值为 "26745332"。
++# 9. `cover_y`：本电影封面图片的垂直尺寸，值为 3000。
++# 10. `is_new`：本电影是否为最新电影，值为 False。
++
++# 这个 JSON 对象表示一个电影的所有信息，包括评分、封面图片链接、标题等。
+\ No newline at end of file
+Index: crawler/auto_updata_spider_unreleased_films.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/crawler/auto_updata_spider_unreleased_films.py b/crawler/auto_updata_spider_unreleased_films.py
+new file mode 100644
+--- /dev/null	(date 1703208928487)
++++ b/crawler/auto_updata_spider_unreleased_films.py	(date 1703208928487)
+@@ -0,0 +1,102 @@
++import requests
++from bs4 import BeautifulSoup
++import pandas as pd
++from sqlalchemy import create_engine
++import schedule
++import time
++import config
++import pymysql
++
++# https://movie.douban.com/coming?sortby=wish&sequence=desc
++# 豆瓣即将上映电影
++# 定义数据库连接配置
++db_config = {
++    'host': 'localhost',
++    'port': 3306,
++    'user': 'root',
++    'password': '123456',
++    'database': 'douban',
++}
++
++def crawl_data():
++    def save_to_mysql(data_to_insert):
++        # 建立数据库连接
++        conn = pymysql.connect(**db_config)
++
++        try:
++            # 创建游标对象
++            cursor = conn.cursor()
++
++            # 执行INSERT语句，将数据插入pre_movies表
++            sql = "INSERT INTO pre_movies (date, movie_title, genre, country, audience) VALUES (%s, %s, %s, %s, %s)"
++            cursor.executemany(sql, data_to_insert)
++
++            # 提交事务
++            conn.commit()
++
++            # 输出提示信息
++            print("已成功导入数据至pre_movies表")
++
++        except Exception as e:
++            # 发生异常时回滚事务
++            conn.rollback()
++            print("导入数据至pre_movies表出错：", str(e))
++
++        finally:
++            # 关闭游标和数据库连接
++            cursor.close()
++            conn.close()
++
++    # 将爬取到的数据存储到列表中
++    data_to_insert = []
++
++    headers = {
++        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
++    }
++    cookies = {
++        'Cookie': 'll="108288"; bid=up0rofOlT4o; __yadk_uid=6Piu6D9gQlgkP4gC3hgArFi0RunP6k5T; push_noty_num=0; push_doumail_num=0; _vwo_uuid_v2=DDF215CC01DBBE41F222EC90538FB2D8A|49272204d8258e96190df0b4354e4dd2; __utma=30149280.1436538775.1618204010.1618204010.1618721534.2; __utmz=30149280.1618721534.2.2.utmcsr=qdan.me|utmccn=(not set)|utmcmd=(not set)|utmctr=(not provided); __utma=223695111.1097268048.1618204010.1618204010.1618721534.2; __utmz=223695111.1618721534.2.2.utmcsr=qdan.me|utmccn=(not set)|utmcmd=(not set)|utmctr=(not provided); _pk_ref.100001.4cf6=["","",1619498308,"https://m.douban.com/"]; _pk_ses.100001.4cf6=*; __gads=ID=711c888999a2e5f0-22dfaadf9dc7003c:T=1619498309:RT=1619498309:S=ALNI_MZFOiKjGCpwqqIx_9KalMsBejTvlA; _pk_id.100001.4cf6=144675c5bcfcfa6a.1618198911.4.1619498357.1618722649.; dbcl2="226186082:B5H3Q7prE2E"'
++    }
++    # 发送GET请求获取网页内容
++    response = requests.get("https://movie.douban.com/coming?sortby=wish&sequence=desc", headers=headers,
++                            cookies=cookies)
++    html_content = response.text
++
++    # 使用BeautifulSoup解析网页内容
++    soup = BeautifulSoup(html_content, "html.parser")
++
++    # 定位目标<div>标签
++    div_tag = soup.find("div", class_="article")
++
++    # 定位目标<table>标签
++    table_tag = div_tag.find("table", class_="coming_list")
++
++    # 定位目标<tr>标签列表
++    tr_tags = table_tag.find_all("tr", class_="")
++
++    trs = table_tag.find_all('tr')
++
++    for tr in trs:
++        tds = tr.find_all('td')
++        if len(tds) == 5:  # 确保找到了五个td元素
++            date = tds[0].text.strip()
++            movie_title = tds[1].find('a').text.strip()
++            genre = tds[2].text.strip()
++            country = tds[3].text.strip()
++            audience = tds[4].text.strip()
++
++            # 将数据添加到列表中
++            data_to_insert.append((date, movie_title, genre, country, audience))
++
++
++    print(data_to_insert)
++    # 调用保存函数，将数据存入MySQL数据库
++    save_to_mysql(data_to_insert)
++    print("自动更新豆瓣未上映电影于", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), "爬取并更新至数据库")
++
++# schedule.every(12).hours.do(job)
++schedule.every(1).minutes.do(crawl_data)
++
++while True:
++    schedule.run_pending()
++    time.sleep(1)
++
