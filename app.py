@@ -1,21 +1,27 @@
 from flask import Flask, request, render_template, url_for, redirect  # request是请求前端数据相关的包，render_template是路由映射相关的包
 from flask_migrate import Migrate  # 数据库迁移相关的包
 from sqlalchemy.dialects import mysql
-
+from flask_caching import Cache
 import config  # 数据库连接相关
 from exts import db  # 导入数据库对象
 from models import Movie  # 导入建立的检索表
 from prediction.DoubanPrediction import get_prediction_results
+from pyinstrument import Profiler
 
 app = Flask(__name__, template_folder='./templates')
 app.config.from_object(config)
+cache = Cache(config={'CACHE_TYPE': 'simple'})
 # 把app绑定到db上
 db.init_app(app)
 migrate = Migrate(app, db)
 
 
 @app.route("/", methods=["POST", "GET"])  # 设置访问的域名，默认5000端口的化，访问检索页面就是127.0.0.1:5000
+@cache.cached(timeout=120)
 def get_detail():
+    profiler_get_detail = Profiler()
+    profiler_get_detail.start()
+
     if request.args.get('key_word', None) == None:  # 如果没有检测到关键字提交，就停留在检索页面
         print("未传参")
         return render_template("search.html")  # 映射到检索页面
@@ -27,15 +33,19 @@ def get_detail():
 
         prediction_results = get_prediction_results()
 
-        return render_template("search.html", key_words=key_words, data=
-        "随机森林预测评分为： " + str(prediction_results[-1], str(3)))
-        # + "--------" + "xgbboost预测评分为： " + str(prediction_results[-2])
-        # + "--------" + "catboost预测评分为： " + str(round(prediction_results[-1], 3))
-        # + "--------" + "lgbm预测评分为： " + str(prediction_results[-4])
-        # 映射到类似与百度百科的页面，并将查询到的条目传过去
 
+    return render_template("search.html", key_words=key_words, data=
+    "随机森林预测评分为： " + str(prediction_results))
+    # + "--------" + "xgbboost预测评分为： " + str(prediction_results[-2])
+    # + "--------" + "catboost预测评分为： " + str(round(prediction_results[-1], 3))
+    # + "--------" + "lgbm预测评分为： " + str(prediction_results[-4])
+    # 映射到类似与百度百科的页面，并将查询到的条目传过去
+
+    profiler_get_detail.stop()
+    profiler_get_detail.print()
 
 @app.route('/', methods=['POST'])  # 定义搜索结果路由
+@cache.cached(timeout=120)
 def save():
     # 获取用户输入的电影名称和豆瓣id
     movie = request.form['movie']
@@ -59,6 +69,7 @@ def save():
 
 
 @app.route('/', methods=['POST'])
+@cache.cached(timeout=120)
 def search():
     movie = request.form.get('movie')
     actors = request.form.get('actors')
@@ -87,6 +98,7 @@ def search():
 # flask db migrate
 #
 # flask db upgrade
+
 
 if __name__ == '__main__':
     app.run(debug=True)
