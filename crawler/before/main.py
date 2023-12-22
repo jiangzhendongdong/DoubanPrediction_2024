@@ -1,18 +1,16 @@
 from bs4 import BeautifulSoup
-from crawler.manager import Manager
-from crawler.downloader import *
+from crawler.before.manager import Manager
+from crawler.before.downloader import *
 from crawler.parser import *
-from crawler.processor import *
+from crawler.before.processor import *
 import re
 from crawler.TextAnalyse.NLP import SQLAnalyse, worldCloudCreate
 import random
-import matplotlib
 import time
 import os
 import math
 import requests
 from Prediction.prediction_main import *
-from glob import glob
 import numpy as np
 
 def fit(data_x, data_y):
