@@ -5,11 +5,14 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from pyinstrument import Profiler
 
+profiler_get_detail = Profiler()
+profiler_get_detail.start()
 
 def data_preprocessing():
 
-    movie = pd.read_csv("D:/2024毕业设计/代码/douban_prediction/DoubanMoviesData.csv")
+    movie = pd.read_csv("DoubanMoviesData.csv")
 
     threshold = 15
     columns_with_too_many_categories = []
@@ -54,28 +57,25 @@ def data_preprocessing():
 
 def split_train_test_data():
     x, y = data_preprocessing()
-
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42, shuffle=True)
-
     return x_train, x_test, y_train, y_test
 
 def get_prediction_result():
 
     x_train, x_test, y_train, y_test = split_train_test_data()
-
-    rf_regressor = RandomForestRegressor(n_estimators=500, random_state=42)
+    rf_regressor = RandomForestRegressor(n_estimators=50, random_state=42)
     rf_regressor.fit(x_train, y_train)
-
     y_pred_rf = rf_regressor.predict(x_test)
     ratingscore = y_pred_rf[-1]
-
     return ratingscore
-
 
 result = get_prediction_result()
 print(result)
 
-def get_prediction_results():
+profiler_get_detail.stop()
+profiler_get_detail.print()
+
+def XXX():
 
     # x = df.drop(['douban_score'], axis=1)  # 特征
     # y = df['douban_score']  # 目标变量
