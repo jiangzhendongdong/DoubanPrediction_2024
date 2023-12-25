@@ -3,10 +3,11 @@ from flask import Flask, request, render_template, url_for, redirect, \
 from flask_migrate import Migrate  # 数据库迁移相关的包
 from sqlalchemy.dialects import mysql
 import config  # 数据库连接相关
+from datasql.get_paginated import get_paginated_results
 from exts import db  # 导入数据库对象
 from models import Movie  # 导入建立的检索表
 from prediction.DoubanPrediction import get_prediction_result
-from datasql import get_paginated_results
+
 
 app = Flask(__name__, template_folder='./templates')
 app.config.from_object(config)

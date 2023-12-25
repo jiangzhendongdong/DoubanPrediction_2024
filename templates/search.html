@@ -4,6 +4,7 @@
     <meta charset="UTF-8" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi">
     <title>电影检索</title>
     <link rel="stylesheet" href="../static/css/search.css">
+    <link rel="stylesheet" href="../static/js/search.js">
 </head>
 <body class="bg">
     <!-- 搜索框 -->
@@ -16,9 +17,15 @@
         <div class="search bar">
 
             <form action="{{ url_for('get_detail') }}" method="get">
-                <p><input type="text" style="font-size: 20px" placeholder="请输入电影名称" name="key_word"></p>
+                <p><input type="text" style="font-size: 20px" placeholder="请输入电影名称" name="key_word" id="key_word"></p>
                 <button type="submit"></button>
+                <select id="movie_list" name="movie_list">
+                    {% for movie in key_words %}
+                        <option value="{{ movie.id }}">{{ movie.movie }}</option>
+                    {% endfor %}
+                </select>
             </form>
+
 
             <div style="font-size: 25px;color:#ec500b;font-weight: bolder">
               预测评分：
@@ -32,7 +39,7 @@
 
             {% for key_word in key_words %}
 
-                <div style="margin-top: 20px;font-size: 15px;color:#ec500b;font-weight: bolder ">电影名称：</div>
+                <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">电影名称：</div>
                 <div class="search_detail_title">{{ key_word.movie }}</div>
 
                 <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">豆瓣评分：</div>

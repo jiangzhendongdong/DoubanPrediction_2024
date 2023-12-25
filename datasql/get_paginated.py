@@ -1,3 +1,4 @@
+
 def get_paginated_results(query, page, page_size):
     start = (page - 1) * page_size
     end = start + page_size

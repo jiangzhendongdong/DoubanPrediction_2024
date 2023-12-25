@@ -57,15 +57,16 @@ button {
 .search_detail{
     border:2px solid #ec500b;
     border-radius:5px;
-    background: aliceblue;
-    height:500px ;
-    width: 600px;
+    height:100%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
     align-content: center;
-    margin: 0 auto;
-    margin-top: 60px;
-    background-color:rgba(0.1,0,0.1,0.2);
-
+    justify-content: center;
+    margin: 60px auto 0;
+    background: rgba(0.1, 0, 0.1, 0.2);
 }
+
 .search_detail_title {
     text-align: center;
     margin-top:2px;
