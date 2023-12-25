@@ -15,15 +15,18 @@
 
         <div class="search bar">
 
-              <div style="font-size: 25px;color:#ec500b;font-weight: bolder">预测评分：</div>
-                    <div class="search_detail_score">
-                            <p>{{ data }}</p>
-              </div>
-
             <form action="{{ url_for('get_detail') }}" method="get">
                 <p><input type="text" style="font-size: 20px" placeholder="请输入电影名称" name="key_word"></p>
                 <button type="submit"></button>
             </form>
+
+            <div style="font-size: 25px;color:#ec500b;font-weight: bolder">
+              预测评分：
+            </div>
+
+            <div class="search_detail_score">
+                    <p>{{ data }}</p>
+            </div>
 
             <div class="search_detail">
 

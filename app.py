@@ -1,11 +1,12 @@
-from flask import Flask, request, render_template, url_for, redirect  # request是请求前端数据相关的包，render_template是路由映射相关的包
+from flask import Flask, request, render_template, url_for, redirect, \
+    abort  # request是请求前端数据相关的包，render_template是路由映射相关的包
 from flask_migrate import Migrate  # 数据库迁移相关的包
 from sqlalchemy.dialects import mysql
 import config  # 数据库连接相关
 from exts import db  # 导入数据库对象
 from models import Movie  # 导入建立的检索表
 from prediction.DoubanPrediction import get_prediction_result
-
+from datasql import get_paginated_results
 
 app = Flask(__name__, template_folder='./templates')
 app.config.from_object(config)
@@ -15,28 +16,40 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
-@app.route("/", methods=["POST", "GET"])  # 设置访问的域名，默认5000端口的化，访问检索页面就是127.0.0.1:5000
+@app.route("/", methods=["POST", "GET"])
 def get_detail():
-
-
-    if request.args.get('key_word', None) == None:  # 如果没有检测到关键字提交，就停留在检索页面
+    if request.args.get('key_word', None) is None:
         print("未传参")
-        return render_template("search.html")  # 映射到检索页面
-    else:  # 如果有关键词提交
-        key_words = request.args.get('key_word')  # 将传来的关键词赋给key_words
-        print(key_words)
-        key_words = Movie.query.filter_by(movie=key_words).all()  # 在表里查询符合条件的条目赋给key_words
+        return render_template("search.html")
+    else:
+        key_words = request.args.get('key_word')
         print(key_words)
 
-        prediction_results = get_prediction_result()
+        # 使用模糊搜索查询数据库中符合条件的电影条目
+        key_words = Movie.query.filter(Movie.movie.like("%{}%".format(key_words))).all()
+        print(key_words)
 
-        return render_template("search.html", key_words=key_words, data=
-        "随机森林预测评分为： " + str(prediction_results))
+        # 获取分页参数
+        page = int(request.args.get('page', 1))
+        page_size = int(request.args.get('page_size', 10))
+
+        # 分页查询
+        items, item_count, page_count = get_paginated_results(
+            Movie.query.filter(Movie.movie.like("%{}%".format(key_words))), page, page_size)
+
+        if key_words:
+            prediction_results = get_prediction_result()
+            return render_template("search.html", key_words=key_words, items=items, item_count=item_count, page=page,
+                                   page_size=page_size, page_count=page_count,
+                                   data="随机森林预测评分为： " + str(prediction_results))
+        else:
+            return render_template("search.html", key_words=key_words, items=items, item_count=item_count, page=page,
+                                   page_size=page_size, page_count=page_count, data="没有找到匹配的电影")
+
         # + "--------" + "xgbboost预测评分为： " + str(prediction_results[-2])
         # + "--------" + "catboost预测评分为： " + str(round(prediction_results[-1], 3))
         # + "--------" + "lgbm预测评分为： " + str(prediction_results[-4])
         # 映射到类似与百度百科的页面，并将查询到的条目传过去
-
 
 
 @app.route('/', methods=['POST'])  # 定义搜索结果路由
