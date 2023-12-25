@@ -3,123 +3,44 @@
 <head>
     <meta charset="UTF-8" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi">
     <title>电影检索</title>
+    <link rel="stylesheet" href="../static/css/search.css">
 </head>
-<style type="text/css">
-    .bg{
-        background-image: url("../static/background.png");
-        background-repeat: no-repeat;
-        background-size:100% 100%;
-        background-position: center;
-        background-attachment: fixed;
-    }
-
-    * {
-        box-sizing:border-box;
-    }
-    div.Logo{
-
-    }
-    div.search {
-        padding:10px 0;
-    }
-    form {
-        position:relative;
-        width:600px;
-        margin:0 auto;
-    }
-    input,button {
-        border:none;
-        outline:none;
-    }
-    input {
-        width:100%;
-        height:42px;
-        padding-left:13px;
-    }
-    button {
-        height:42px;
-        width:42px;
-        cursor:pointer;
-        position:absolute;
-    }
-    .bar input {
-        border:2px solid #ec500b;
-        border-radius:5px;
-        background:transparent;
-        top:0;
-        right:0;
-    }
-    .bar button {
-        background: #ec500b;
-        border-radius:0 5px 5px 0;
-        width:90px;
-        top:0;
-        right:0;
-    }
-    .bar button:before {
-        content:"检索";
-        font-size:13px;
-        color:#F9F0DA;
-    }
-    .search_detail{
-        border:2px solid #ec500b;
-        border-radius:5px;
-        background: aliceblue;
-        height:500px ;
-        width: 600px;
-        align-content: center;
-        margin: 0 auto;
-        margin-top: 60px;
-        background-color:rgba(0.1,0,0.1,0.2);
-
-    }
-    .search_detail_title {
-        text-align: center;
-        margin-top:2px;
-        font-weight: bolder;
-        color: black;
-        font-size:15px;
-    }
-    .search_detail_score {
-        text-align: center;
-        font-weight: bolder;
-        color: black;
-        font-size:15px;
-    }
-</style>
 <body class="bg">
-<div align="center" style="margin-top: 100px">
-    <div class="Logo" style="margin-top: 20px">
-        <img src="../static/movie_pre_logo.png" alt="">
-    </div>
-    <div class="search bar">
+    <!-- 搜索框 -->
+    <div align="center" style="margin-top: 100px">
 
-      <div style="font-size: 25px;color:#ec500b;font-weight: bolder">预测评分：</div>
-            <div class="search_detail_score">
-                	<p>{{ data }}</p>
-            </div>
-
-    <form action="{{ url_for('get_detail') }}" method="get">
-        <p><input type="text" style="font-size: 20px" placeholder="请输入电影名称" name="key_word"></p>
-        <button type="submit"></button>
-    </form>
-        <div class="search_detail">
-
-        {% for key_word in key_words %}
-
-            <div style="margin-top: 20px;font-size: 15px;color:#ec500b;font-weight: bolder ">电影名称：</div>
-            <div class="search_detail_title">{{ key_word.movie }}</div>
-
-            <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">豆瓣评分：</div>
-            <div class="search_detail_score"><p>{{ key_word.douban_score }}</p></div>
-
-            <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">电影解析：</div>
-            <div style="font-size: 15px;font-weight: bold;text-indent: 50px;line-height: 25px"><p>{{ key_word.storyline }}</p></div>
-
-        {% endfor %}
+        <div class="Logo" style="margin-top: 20px">
+            <img src="../static/movie_pre_logo.png" alt="">
         </div>
-    </div>>
+
+        <div class="search bar">
+
+              <div style="font-size: 25px;color:#ec500b;font-weight: bolder">预测评分：</div>
+                    <div class="search_detail_score">
+                            <p>{{ data }}</p>
+              </div>
+
+            <form action="{{ url_for('get_detail') }}" method="get">
+                <p><input type="text" style="font-size: 20px" placeholder="请输入电影名称" name="key_word"></p>
+                <button type="submit"></button>
+            </form>
+
+            <div class="search_detail">
+
+            {% for key_word in key_words %}
+
+                <div style="margin-top: 20px;font-size: 15px;color:#ec500b;font-weight: bolder ">电影名称：</div>
+                <div class="search_detail_title">{{ key_word.movie }}</div>
+
+                <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">豆瓣评分：</div>
+                <div class="search_detail_score"><p>{{ key_word.douban_score }}</p></div>
+
+                <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">电影解析：</div>
+                <div style="font-size: 15px;font-weight: bold;text-indent: 50px;line-height: 25px"><p>{{ key_word.storyline }}</p></div>
+
+            {% endfor %}
+            </div>
+        </div>>
     </div>
-</div>
 </body>
 </html>
