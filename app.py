@@ -38,14 +38,11 @@ def get_detail():
         items, item_count, page_count = get_paginated_results(
             Movie.query.filter(Movie.movie.like("%{}%".format(key_words))), page, page_size)
 
-        if key_words:
-            prediction_results = get_prediction_result()
-            return render_template("search.html", key_words=key_words, items=items, item_count=item_count, page=page,
-                                   page_size=page_size, page_count=page_count,
-                                   data="随机森林预测评分为： " + str(prediction_results))
-        else:
-            return render_template("search.html", key_words=key_words, items=items, item_count=item_count, page=page,
-                                   page_size=page_size, page_count=page_count, data="没有找到匹配的电影")
+        prediction_results = get_prediction_result()
+
+        return render_template("search.html", key_words=key_words, items=items, item_count=item_count, page=page,
+                               page_size=page_size, page_count=page_count,
+                               data="随机森林预测评分为： " + str(prediction_results))
 
         # + "--------" + "xgbboost预测评分为： " + str(prediction_results[-2])
         # + "--------" + "catboost预测评分为： " + str(round(prediction_results[-1], 3))
