@@ -10,8 +10,8 @@ from pyinstrument import Profiler
 profiler_get_detail = Profiler()
 profiler_get_detail.start()
 
-def data_preprocessing():
 
+def data_preprocessing():
     movie = pd.read_csv("DoubanMoviesData.csv")
 
     threshold = 15
@@ -55,13 +55,14 @@ def data_preprocessing():
 
     return x, y
 
+
 def split_train_test_data():
     x, y = data_preprocessing()
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42, shuffle=True)
     return x_train, x_test, y_train, y_test
 
-def get_prediction_result():
 
+def get_prediction_result():
     x_train, x_test, y_train, y_test = split_train_test_data()
     rf_regressor = RandomForestRegressor(n_estimators=50, random_state=42)
     rf_regressor.fit(x_train, y_train)
@@ -69,14 +70,15 @@ def get_prediction_result():
     ratingscore = y_pred_rf[-1]
     return ratingscore
 
+
 result = get_prediction_result()
 print(result)
 
 profiler_get_detail.stop()
 profiler_get_detail.print()
 
-def XXX():
 
+def XXX():
     # x = df.drop(['douban_score'], axis=1)  # 特征
     # y = df['douban_score']  # 目标变量
     # x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42, shuffle=False)
@@ -147,7 +149,6 @@ def XXX():
     # y_pred_xgb = xgb_regressor.predict(x_test)
     # y_pred_catboost = catboost_regressor.predict(x_test)
     # y_pred_lgbm = lgbm_regressor.predict(x_test)
-
 
     # 计算各个模型的性能指标
     def evaluate_model(y_true, y_pred):

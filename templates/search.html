@@ -13,15 +13,13 @@
             <img src="../static/movie_pre_logo.png" alt="">
         </div>
 
-        <div class="search bar">
-            <form action="{{ url_for('get_detail') }}" method="get">
-                <input type="text" id="searchInput"  placeholder="请输入搜索关键词">
-                <button type="submit"></button>
-                <div id="suggestions"></div>
-
+        <div class="search bar" >
+            <form id="searchForm" action="{{ url_for('get_detail') }}" method="get">
+                <input type="text" placeholder="请输入搜索关键词" name="key_word">
+                <button type="submit" ></button>
             </form>
 
-
+            <p>{{ exist }}{{ notexist }}</p>
 
             <div style="font-size: 25px;color:#ec500b;font-weight: bolder">
               预测评分：
@@ -43,13 +41,9 @@
 
                 <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">电影解析：</div>
                 <div style="font-size: 15px;font-weight: bold;text-indent: 50px;line-height: 25px"><p>{{ key_word.storyline }}</p></div>
-
             {% endfor %}
             </div>
         </div>>
     </div>
-<script>
-
-</script>
 </body>
 </html>
