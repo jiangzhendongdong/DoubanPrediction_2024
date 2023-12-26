@@ -1,5 +1,5 @@
-from flask import Flask, request, render_template, url_for, redirect, \
-    abort  # request是请求前端数据相关的包，render_template是路由映射相关的包
+﻿from flask import Flask, request, render_template, url_for, redirect, \
+    abort, jsonify  # request是请求前端数据相关的包，render_template是路由映射相关的包
 from flask_migrate import Migrate  # 数据库迁移相关的包
 from sqlalchemy.dialects import mysql
 import config  # 数据库连接相关
@@ -7,7 +7,6 @@ from datasql.get_paginated import get_paginated_results
 from exts import db  # 导入数据库对象
 from models import Movie  # 导入建立的检索表
 from prediction.DoubanPrediction import get_prediction_result
-
 
 app = Flask(__name__, template_folder='./templates')
 app.config.from_object(config)
@@ -41,7 +40,7 @@ def get_detail():
         prediction_results = get_prediction_result()
 
         return render_template("search.html", key_words=key_words, items=items, item_count=item_count, page=page,
-                               page_size=page_size, page_count=page_count,
+                               page_size=page_size, page_count=page_count ,
                                data="随机森林预测评分为： " + str(prediction_results))
 
         # + "--------" + "xgbboost预测评分为： " + str(prediction_results[-2])
@@ -57,7 +56,7 @@ def save():
 
     # 查询数据库获取电影信息
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM douban_moviesdata WHERE movie = %s ", (movie))
+    cur.execute("SELECT * FROM douban_moviesdata WHERE movie = %s ", movie)
     movie_info = cur.fetchone()
     cur.close()
 

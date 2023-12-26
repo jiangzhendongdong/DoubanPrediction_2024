@@ -1,36 +1,27 @@
-document.getElementById('key_word').addEventListener('input', function(event) {
-    // 获取输入框的值
-    var keyword = event.target.value;
-    // 判断输入框是否为空
-    if (keyword.trim() === '') {
-        // 如果为空，则将输入框的值设置为提示信息
-        event.target.value = '请输入电影名称';
-    } else {
-        // 如果不为空，则发送ajax请求
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/search?key_word=' + keyword, true);
-        xhr.onreadystatechange = function() {
-            // 当ajax请求状态为4且状态码为200时，表示请求成功
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                // 解析ajax请求返回的数据
-                var results = JSON.parse(xhr.responseText);
-                // 更新下拉框内容
-                var selectElement = document.getElementById('movie_list');
-                selectElement.innerHTML = "";
-                // 遍历ajax请求返回的数据，创建option元素，添加到下拉框中
-                for (var i = 0; i < results.length; i++) {
-                    var optionElement = document.createElement("option");
-                    optionElement.value = results[i].id;
-                    optionElement.text = results[i].movie;
-                    selectElement.appendChild(optionElement);
-                }
-            }
-        };
-        xhr.send();
-    }
-});     {% endfor %}
-                </select>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi">
+    <title>电影检索</title>
+    <link rel="stylesheet" href="../static/css/search.css">
+</head>
+<body class="bg">
+    <!-- 搜索框 -->
+    <div align="center" style="margin-top: 100px">
+
+        <div class="Logo" style="margin-top: 20px">
+            <img src="../static/movie_pre_logo.png" alt="">
+        </div>
+
+        <div class="search bar">
+            <form action="{{ url_for('get_detail') }}" method="get">
+                <input type="text" id="searchInput"  placeholder="请输入搜索关键词">
+                <button type="submit"></button>
+                <div id="suggestions"></div>
+
             </form>
+
+
 
             <div style="font-size: 25px;color:#ec500b;font-weight: bolder">
               预测评分：
@@ -58,30 +49,7 @@ document.getElementById('key_word').addEventListener('input', function(event) {
         </div>>
     </div>
 <script>
-document.getElementById('key_word').addEventListener('input', function(event) {
-    var keyword = event.target.value;
-    if (keyword.trim() === '') {
-        event.target.value = '请输入电影名称';
-    } else {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/search?key_word=' + keyword, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var results = JSON.parse(xhr.responseText);
-                // 更新下拉框内容
-                var selectElement = document.getElementById('movie_list');
-                selectElement.innerHTML = "";
-                for (var i = 0; i < results.length; i++) {
-                    var optionElement = document.createElement("option");
-                    optionElement.value = results[i].id;
-                    optionElement.text = results[i].movie;
-                    selectElement.appendChild(optionElement);
-                }
-            }
-        };
-        xhr.send();
-    }
-});
+
 </script>
 </body>
 </html>
