@@ -20,17 +20,19 @@ migrate = Migrate(app, db)
 
 @app.route("/", methods=["POST", "GET"])
 def get_detail():
-    global exist
-    global notexist
+    global exist , notexist
+    key_words = ""
+    exist = ""
+    notexist = ""  # 添加这行代码来初始化全局变量notexist
     if request.args.get('key_word', None) is None:
         print("未传参")
         return render_template("search.html")
     else:
         key_words = request.args.get('key_word')
         if check_movie_exists(key_words):
-            exist = key_words + "电影存在,返回已存储电影数据"
+            exist = "<<<" + key_words + ">>>" + "电影存在,返回已存储电影数据"
         else:
-            notexist = key_words + "电影不存在，准备启动爬虫爬取最新电影数据"
+            notexist = "<<<" + key_words + ">>>" + "电影不存在，准备启动爬虫爬取最新电影数据"
         # 使用模糊搜索查询数据库中符合条件的电影条目
         key_words = Movie.query.filter(Movie.movie.like("%{}%".format(key_words))).all()
         print(key_words)
@@ -43,7 +45,7 @@ def get_detail():
         items, item_count, page_count = get_paginated_results(
             Movie.query.filter(Movie.movie.like("%{}%".format(key_words))), page, page_size)
 
-        return render_template("search.html", key_words=key_words , exist=exist , notexist=notexist)
+        return render_template("search.html", key_words=key_words , exist=exist ,notexist=notexist)
 
         # prediction_results = get_prediction_result()
         # data="随机森林预测评分为： " + str(prediction_results))
