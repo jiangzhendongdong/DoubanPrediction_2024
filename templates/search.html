@@ -33,17 +33,21 @@
 
             {% for key_word in key_words %}
 
-                <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">电影名称：</div>
-                <div class="search_detail_title">{{ key_word.movie }}</div>
-
-                <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">豆瓣评分：</div>
-                <div class="search_detail_score"><p>{{ key_word.douban_score }}</p></div>
-
-                <div style="font-size: 15px;color:#ec500b;font-weight: bolder ">电影解析：</div>
-                <div style="font-size: 15px;font-weight: bold;text-indent: 50px;line-height: 25px"><p>{{ key_word.storyline }}</p></div>
+                <h1><span id="movie">{{ key_word.movie }}</span></h1>
+                <div id="mainpic">放置海报</div>
+                <div id="info">
+                    <span>导演：{{ key_word.directors }}</span>
+                    <span>主演：{{ key_word.actors[:3] }}</span>
+                    <span>类型：{{ key_word.genre }}</span>
+                    <span>语言：{{ key_word.languages }}</span>
+                    <span>上映时间：{{ key_word.release_date }}</span>
+                    <span>片长：{{ key_word.duration }}</span>
+                </div>
+                <div id="douban_score">豆瓣评分：{{ key_word.douban_score }}</div>
+                <span id="storyline">{{ key_word.storyline }}</span>
             {% endfor %}
             </div>
-        </div>>
+        </div>
     </div>
 </body>
 </html>

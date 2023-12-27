@@ -8,10 +8,9 @@
 
 * {
     box-sizing:border-box;
+    padding: 0;
 }
-div.Logo{
 
-}
 div.search {
     padding:10px 0;
 }
@@ -57,25 +56,33 @@ button {
 .search_detail{
     border:2px solid #ec500b;
     border-radius:5px;
-    height:500px ;
+    height:600px ;
     width: 600px;
     align-content: center;
-    margin: 60px auto 0;
-    background: rgba(0.1, 0, 0.1, 0.2);
+    /*margin: 60px auto 0;*/
+    background-image: linear-gradient( 135deg, #FFF886 10%, #F072B6 100%);
 
 }
-.search_detail_title {
-    text-align: center;
-    margin-top:2px;
-    font-weight: bolder;
-    color: black;
-    font-size:15px;
-}
-.search_detail_score {
-    text-align: center;
-    font-weight: bolder;
-    color: black;
-    font-size:15px;
-}
 
+#movie{
+    display: inline-block; /* 将h1元素设置为内联块元素 */
+    position: relative; /* 将h1元素设置为相对定位 */
+  }
 
+#mainpic, #info, #douban_score {
+    width: 30%;
+    height: 200px;
+    display: inline-block; /* 将div设置为内联块元素 */
+    /*text-align: left;*/
+    line-height: 30px;
+  }
+
+span {
+    text-align: left; /* 将span内的文字居左显示 */
+    display: block; /* 将span设置为块元素 */
+  }
+
+#storyline{
+    margin-left: 20px;
+    margin-right: 20px;
+}
