@@ -34,7 +34,9 @@
             {% for key_word in key_words %}
 
                 <h1><span id="movie">{{ key_word.movie }}</span></h1>
-                <div id="mainpic">放置海报</div>
+                <div id="mainpic">
+                    放置海报
+                </div>
                 <div id="info">
                     <span>导演：{{ key_word.directors }}</span>
                     <span>主演：{{ key_word.actors[:3] }}</span>
@@ -43,8 +45,11 @@
                     <span>上映时间：{{ key_word.release_date }}</span>
                     <span>片长：{{ key_word.duration }}</span>
                 </div>
-                <div id="douban_score">豆瓣评分：{{ key_word.douban_score }}</div>
-                <span id="storyline">{{ key_word.storyline }}</span>
+                <div id="douban_score">
+                    <span>豆瓣评分：{{ key_word.douban_score }}</span>
+                    <span>想看人数：{{ key_word.douban_votes }}</span>
+                </div>
+                <span id="storyline">&nbsp;&nbsp;&nbsp;&nbsp;{{ key_word.storyline }}</span>
             {% endfor %}
             </div>
         </div>

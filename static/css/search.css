@@ -75,6 +75,7 @@ button {
     display: inline-block; /* 将div设置为内联块元素 */
     /*text-align: left;*/
     line-height: 30px;
+    vertical-align: top;
   }
 
 span {
