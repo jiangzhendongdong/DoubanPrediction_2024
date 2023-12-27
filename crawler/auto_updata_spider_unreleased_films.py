@@ -20,6 +20,7 @@ db_config = {
     'database': 'douban',
 }
 
+
 def crawl_data():
     def save_to_mysql(data_to_insert):
         # 建立数据库连接
