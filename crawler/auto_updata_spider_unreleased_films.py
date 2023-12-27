@@ -6,6 +6,8 @@ import schedule
 import time
 import config
 import pymysql
+from datasql.get_audience_from_database import get_audience_from_database
+from datasql.update_movie_id import update_movie_id
 
 # https://movie.douban.com/coming?sortby=wish&sequence=desc
 # 豆瓣即将上映电影
@@ -26,10 +28,23 @@ def crawl_data():
         try:
             # 创建游标对象
             cursor = conn.cursor()
+            # 查询pre_movies表中是否有数据
+            sql_count = "SELECT COUNT(*) FROM pre_movies"
+            cursor.execute(sql_count)
+            result = cursor.fetchone()[0]
 
-            # 执行INSERT语句，将数据插入pre_movies表
-            sql = "INSERT INTO pre_movies (date, movie_title, genre, country, audience) VALUES (%s, %s, %s, %s, %s)"
-            cursor.executemany(sql, data_to_insert)
+            if result == 0:
+                # 数据库为空，直接插入新数据
+                # 执行INSERT语句，将数据插入pre_movies表
+                sql_insert = "INSERT INTO pre_movies (date, movie_title, genre, country, audience) VALUES (%s, %s, %s, %s, %s)"
+                cursor.executemany(sql_insert, data_to_insert)
+            else:
+                # 数据库不为空，根据电影名字自动更新audience
+                for data in data_to_insert:
+                    date, movie_title, genre, country, audience = data
+                    # 执行UPDATE语句，更新指定电影的audience
+                    sql_update = "UPDATE pre_movies SET audience = %s WHERE movie_title = %s"
+                    cursor.execute(sql_update, (audience, movie_title))
 
             # 提交事务
             conn.commit()
