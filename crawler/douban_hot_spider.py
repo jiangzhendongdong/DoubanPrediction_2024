@@ -84,7 +84,7 @@ class douban(object):
         # 打印DataFrame
         print(test)
         # 创建一个字符串，将当前时间添加到字符串中，并使用正则表达式替换时间中的冒号，最后添加.csv后缀
-        path = './douban_' + str(ticks[0]).replace(':', '-') + '.csv'
+        path = './douban_hot_spider' + str(ticks[0]).replace(':', '-') + '.csv'
         # 将DataFrame保存为csv文件
         test.to_csv(path, encoding='utf-8-sig', index=False)
         # 返回保存文件的路径

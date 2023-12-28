@@ -50,6 +50,9 @@ def crawl_data():
             # 提交事务
             conn.commit()
 
+            #解决id自增带来的断层问题
+            update_movie_id()
+
             # 输出提示信息
             print("已成功导入数据至pre_movies表")
 
