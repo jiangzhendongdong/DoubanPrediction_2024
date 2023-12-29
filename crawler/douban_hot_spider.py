@@ -33,8 +33,8 @@ class douban(object):
 
             # 拼接url
             url_visit = self.url_root + '{}'.format(self.page * 20)
-            # 随机等待5秒
-            time.sleep(np.random.rand() * 5)
+            # 随机等待3秒
+            time.sleep(np.random.rand() * 3)
             # 发送get请求，获取json数据
             file = s.get(url_visit, headers=self.headers[self.page % len(self.headers)]).json()
             # 打印headers
