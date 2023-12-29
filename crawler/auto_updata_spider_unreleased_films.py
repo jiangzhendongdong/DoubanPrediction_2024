@@ -50,7 +50,7 @@ def crawl_data():
             # 提交事务
             conn.commit()
 
-            #解决id自增带来的断层问题
+            # 解决id自增带来的断层问题
             update_movie_id()
 
             # 输出提示信息
@@ -106,11 +106,11 @@ def crawl_data():
             # 将数据添加到列表中
             data_to_insert.append((date, movie_title, genre, country, audience))
 
-
     print(data_to_insert)
     # 调用保存函数，将数据存入MySQL数据库
     save_to_mysql(data_to_insert)
     print("自动更新豆瓣未上映电影于", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), "爬取并更新至数据库")
+
 
 # schedule.every(12).hours.do(job)
 schedule.every(1).minutes.do(crawl_data)
@@ -118,4 +118,3 @@ schedule.every(1).minutes.do(crawl_data)
 while True:
     schedule.run_pending()
     time.sleep(1)
-
