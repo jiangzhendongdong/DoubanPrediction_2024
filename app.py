@@ -8,6 +8,7 @@ from exts import db  # 导入数据库对象
 from models import Movie  # 导入建立的检索表
 # from prediction.DoubanPrediction import get_prediction_result
 from datasql.check_movie_exists import check_movie_exists
+from crawler import spider
 
 
 app = Flask(__name__, template_folder='./templates')
@@ -30,9 +31,13 @@ def get_detail():
     else:
         key_words = request.args.get('key_word')
         if check_movie_exists(key_words):
-            exist = "<<<" + key_words + ">>>" + "电影存在,返回已存储电影数据"
+            exist = "<<<" + key_words + ">>>" + "电影已收录于数据库,返回已收录的电影数据"
         else:
-            notexist = "<<<" + key_words + ">>>" + "电影不存在，准备启动爬虫爬取最新电影数据"
+            notexist = "<<<" + key_words + ">>>" + "电影未收录入数据库，正在启动爬虫爬取近期未上映电影数据"
+
+            #
+
+
         # 使用模糊搜索查询数据库中符合条件的电影条目
         key_words = Movie.query.filter(Movie.movie.like("%{}%".format(key_words))).all()
         print(key_words)
@@ -108,5 +113,6 @@ def get_detail():
 # flask db migrate
 #
 # flask db upgrade
+
 if __name__ == '__main__':
     app.run()

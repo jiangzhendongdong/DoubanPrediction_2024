@@ -5,7 +5,7 @@ import threading
 from douban_hot_spider import douban
 import os
 from sendEmail import sendEmail
-
+import time
 
 # 创建一个参数解析器
 ap = argparse.ArgumentParser()
@@ -47,10 +47,10 @@ def run():
 
 
 # 每隔三分钟行run函数
-schedule.every(3).minutes.do(run)
+schedule.every(10).minutes.do(run)
 # 无限循环
 while True:
     # 执行所有待执行的任务
     schedule.run_pending()
-    time.sleep(1)
+    time.sleep(5)
 

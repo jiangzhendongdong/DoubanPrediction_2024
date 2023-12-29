@@ -83,7 +83,7 @@ class douban(object):
         ticks.extend([""] * (len(self.url) - len(ticks)))
 
         # 创建一个DataFrame，将列表ticks、self.movie_title、self.movie_rate、self.url中的元素添加到DataFrame中
-        test = pd.DataFrame({'time': ticks, 'title': self.movie_title, 'rate': self.movie_rate, 'url': self.url , 'cover':self.movie_cover})
+        test = pd.DataFrame({'title': self.movie_title, 'rate': self.movie_rate, 'url': self.url , 'cover':self.movie_cover})
         # 打印DataFrame
         print(test)
         # 创建一个字符串，将当前时间添加到字符串中，并使用正则表达式替换时间中的冒号，最后添加.csv后缀
