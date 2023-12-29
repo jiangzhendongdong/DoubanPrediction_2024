@@ -12,13 +12,11 @@ class douban(object):
         self.url = []
         self.movie_title = []
         self.movie_rate = []
+        self.movie_cover = []
         self.headers = [
-            {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'},
-            {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'},
-            {'User-Agent': 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/535.11 (KHTML, like Gecko) '
-                           'Chrome/17.0.963.12 Safari/535.11'},
+            {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'},
+            {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'},
+            {'User-Agent': 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.12 Safari/535.11'},
             {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)'}
         ]
 
@@ -68,6 +66,11 @@ class douban(object):
                 # 将评分添加到评分列表中
                 self.movie_rate.append(rate)
 
+                # 获取item的cover
+                cover = dict['cover']
+                # 将cover添加到cover列表中
+                self.movie_cover.append(cover)
+
     # 定义extract函数，用于提取数据
     def extract(self):
         # 调用catch_data函数，获取数据
@@ -80,11 +83,11 @@ class douban(object):
         ticks.extend([""] * (len(self.url) - len(ticks)))
 
         # 创建一个DataFrame，将列表ticks、self.movie_title、self.movie_rate、self.url中的元素添加到DataFrame中
-        test = pd.DataFrame({'time': ticks, 'title': self.movie_title, 'rate': self.movie_rate, 'url': self.url})
+        test = pd.DataFrame({'time': ticks, 'title': self.movie_title, 'rate': self.movie_rate, 'url': self.url , 'cover':self.movie_cover})
         # 打印DataFrame
         print(test)
         # 创建一个字符串，将当前时间添加到字符串中，并使用正则表达式替换时间中的冒号，最后添加.csv后缀
-        path = './douban_hot_spider' + str(ticks[0]).replace(':', '-') + '.csv'
+        path = './douban_hot_spider_' + str(ticks[0]).replace(':', '-') + '.csv'
         # 将DataFrame保存为csv文件
         test.to_csv(path, encoding='utf-8-sig', index=False)
         # 返回保存文件的路径

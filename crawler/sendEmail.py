@@ -5,8 +5,12 @@ from email.mime.multipart import MIMEMultipart
 import io
 import os
 import sys
+from douban_hot_spider import douban
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+my_path = douban(url_root="https://movie.douban.com/j/search_subjects?type=movie&tag=热门&sort=recommend&page_limit=500"
+                  "&page_start=")
+path = my_path.extract()
 class sendEmail(object):
     def __init__(self, sender, receiver, password, smtpServer='smtp.qq.com', title=None, content=None, *annex):
         self._sender = sender
@@ -49,8 +53,7 @@ class sendEmail(object):
 
 def main():
     Mail = sendEmail('418132390@qq.com', '418132390@qq.com', 'oiejpyknzivubhhb', 'smtp.qq.com',
-                     '每日豆瓣电影预测数据更新', '每日豆瓣电影预测数据更新',
-                     str('D:\\Downloads\\crawlers-for-entertainment-master\\douban_Fri Dec 15 15-20-05 2023.csv'))
+                     '每日豆瓣电影预测数据更新', '每日豆瓣电影预测数据更新',path)
     Mail.sendMail()
 
 

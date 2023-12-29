@@ -2,7 +2,7 @@
 import argparse
 import schedule
 import threading
-from douban_hot_spider import Douban
+from douban_hot_spider import douban
 import os
 from sendEmail import sendEmail
 
@@ -14,6 +14,9 @@ ap.add_argument("-t", "--time", type=float, default=24,
 # 添加参数，mail的类型为str，默认值为“Y”，help信息为“send Email?”
 ap.add_argument("-m", "--mail", type=str, default="Y",
                 help="send Email?")
+# 添加参数，spider的类型为str，默认值为"douban"，help信息为"choose spider"
+ap.add_argument("-s", "--spider", type=str, default="douban",
+                help="choose spider")
 # 解析参数
 args = vars(ap.parse_args())
 
@@ -46,7 +49,7 @@ def run():
 # 定义主函数
 def main():
     # 每隔args["time"]秒执行run函数
-    schedule.every(10 * args["time"]).seconds.do(run)
+    schedule.every(1).minutes.do(run)
     # 无限循环
     while True:
         # 执行所有待执行的任务
