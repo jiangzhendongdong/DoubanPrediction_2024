@@ -2,9 +2,9 @@
 import argparse
 import schedule
 import threading
-from douban_hot_spider import douban
+from crawler.douban_hot_spider import douban
 import os
-from sendEmail import sendEmail
+from crawler.sendEmail import sendEmail
 import time
 
 # 创建一个参数解析器

@@ -53,14 +53,22 @@ button {
     font-size:13px;
     color:#F9F0DA;
 }
+
+.predict_score p{
+    display: inline-block;
+}
+
+
 .unreleased_detail{
     border:2px solid #ec500b;
     border-radius:5px;
     height:600px ;
     width: 600px;
     align-content: center;
-    /*margin: 60px auto 0;*/
+    /*margin-bottom: ;: 60px auto 0;*/
     background-image: linear-gradient( 135deg, #FFF886 10%, #F072B6 100%);
+    display: inline-block;
+    position: relative;
 }
 .search_detail{
     border:2px solid #ec500b;
@@ -70,7 +78,8 @@ button {
     align-content: center;
     /*margin: 60px auto 0;*/
     background-image: linear-gradient( 135deg, #FFF886 10%, #F072B6 100%);
-
+    display: inline-block;
+    vertical-align: top;
 }
 
 #movie{
