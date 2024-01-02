@@ -5,7 +5,7 @@ from sqlalchemy.dialects import mysql
 import config  # 数据库连接相关
 from datasql.get_paginated import get_paginated_results
 from exts import db  # 导入数据库对象
-from models import Movie  # 导入建立的检索表
+from models import Movie ,PreMovies # 导入建立的检索表
 # from prediction.DoubanPrediction import get_prediction_result
 from datasql.check_movie_exists import check_movie_exists
 
@@ -22,6 +22,7 @@ migrate = Migrate(app, db)
 def get_detail():
     global exist , notexist
     key_words = ""
+    pre_movies = ""
     exist = ""
     notexist = ""  # 添加这行代码来初始化全局变量notexist
     if request.args.get('key_word', None) is None:
@@ -33,6 +34,8 @@ def get_detail():
             exist = "<<<" + key_words + ">>>" + "电影存在,返回已存储电影数据"
         else:
             notexist = "<<<" + key_words + ">>>" + "电影不存在，准备启动爬虫爬取最新电影数据"
+
+        pre_movies = PreMovies.query.order_by(PreMovies.date.desc()).limit(10)
         # 使用模糊搜索查询数据库中符合条件的电影条目
         key_words = Movie.query.filter(Movie.movie.like("%{}%".format(key_words))).all()
         print(key_words)
@@ -45,7 +48,7 @@ def get_detail():
         items, item_count, page_count = get_paginated_results(
             Movie.query.filter(Movie.movie.like("%{}%".format(key_words))), page, page_size)
 
-        return render_template("search.html", key_words=key_words , exist=exist ,notexist=notexist)
+        return render_template("search.html", pre_movies=pre_movies , key_words=key_words , exist=exist ,notexist=notexist)
 
         # prediction_results = get_prediction_result()
         # data="随机森林预测评分为： " + str(prediction_results))

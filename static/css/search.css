@@ -70,6 +70,23 @@ button {
     display: inline-block;
     position: relative;
 }
+
+.unreleased_detail_show{
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center;
+    height: 50px;
+    margin-top: 9px;
+}
+
+.unreleased_detail_show a {
+    margin-right: 30px;
+     font-size: 20px;
+}
+.unreleased_detail_show span{
+    font-size: 20px;
+}
+
 .search_detail{
     border:2px solid #ec500b;
     border-radius:5px;

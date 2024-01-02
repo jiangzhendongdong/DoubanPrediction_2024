@@ -25,12 +25,13 @@
               <p>预测评分：</p><p>hhh{{ data }}</p>
             </div>
 
-            <div class="search_detail_score">
-
-            </div>
-
             <div class="unreleased_detail">
-
+            {% for pre_movie in pre_movies %}
+            <div class="unreleased_detail_show">
+                <a >{{ pre_movie.movie_title }}</a>
+                <span >{{ pre_movie.audience }}</span>
+            </div>
+            {% endfor %}
             </div>
 
             <div class="search_detail">
@@ -58,5 +59,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>

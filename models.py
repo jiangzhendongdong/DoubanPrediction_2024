@@ -20,5 +20,13 @@ class Movie(db.Model):
     year = db.Column(db.Integer)
 
 
+class PreMovies(db.Model):
+    __tablename__ = 'pre_movies'
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.String(20), nullable=True)
+    movie_title = db.Column(db.String(100), nullable=True)
+    genre = db.Column(db.String(100), nullable=True)
+    country = db.Column(db.String(50), nullable=True)
+    audience = db.Column(db.String(20), nullable=True)
 
 
