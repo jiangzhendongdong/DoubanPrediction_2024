@@ -35,7 +35,7 @@ def get_detail():
         else:
             notexist = "<<<" + key_words + ">>>" + "电影不存在，准备启动爬虫爬取最新电影数据"
 
-        pre_movies = PreMovies.query.order_by(PreMovies.date.desc()).limit(10)
+        pre_movies = PreMovies.query.order_by(PreMovies.date.desc()).limit(20)
         # 使用模糊搜索查询数据库中符合条件的电影条目
         key_words = Movie.query.filter(Movie.movie.like("%{}%".format(key_words))).all()
         print(key_words)
